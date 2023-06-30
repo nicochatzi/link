@@ -25,8 +25,8 @@ void IRAM_ATTR timer_group0_isr(void* userParam)
 {
   static BaseType_t xHigherPriorityTaskWoken = pdFALSE;
 
-  TIMERG0.int_clr_timers.t0 = 1;
-  TIMERG0.hw_timer[0].config.alarm_en = 1;
+  TIMERG0.int_clr_timers.t0_int_clr = 1;
+  TIMERG0.hw_timer[0].config.tn_alarm_en = 1;
 
   xSemaphoreGiveFromISR(userParam, &xHigherPriorityTaskWoken);
   if (xHigherPriorityTaskWoken)
@@ -42,7 +42,8 @@ void timerGroup0Init(int timerPeriodUS, void* userParam)
     .intr_type = TIMER_INTR_LEVEL,
     .counter_dir = TIMER_COUNT_UP,
     .auto_reload = TIMER_AUTORELOAD_EN,
-    .divider = 80};
+    .divider = 80,
+    .clk_src = TIMER_SRC_CLK_APB};
 
   timer_init(TIMER_GROUP_0, TIMER_0, &config);
   timer_set_counter_value(TIMER_GROUP_0, TIMER_0, 0);
